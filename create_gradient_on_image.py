@@ -1,6 +1,6 @@
 """
  ============================================================================
- Name        : main.py
+ Name        : create_gradient_on_image.py
  Author      : Sam Lunev
  Version     : .0
  Copyright   : All rights reserved
