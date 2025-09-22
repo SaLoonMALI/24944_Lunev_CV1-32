@@ -1,13 +1,8 @@
-# 24944_Lunev_Projects
-# Gradient Visualization Tool
+# Gradient Generator
 
-This Python script generates and visualizes gradient patterns (linear and radial) and combines them into color images for visual analysis.
-
-## Key Features
-- Creates linear gradients in forward/reverse directions (X and Y axes)
-- Generates radial gradients
-- Combines gradients into RGB color images
-- Visualizes multiple gradient combinations
+## Overview
+This module provides functions for creating and visualizing various types of gradients including linear, radial,
+and combined RGB gradients. It supports directional control and multiple visualization options.
 
 ## Functions
 
@@ -27,22 +22,6 @@ X, Y = create_coordinate_grids(100, 100)
 print(X.shape)  # Output: (100, 100)
 ```
 
-### create_black_to_white_gradient(width: int = 256, height: int = 256)
-Creates a black to white linear gradient.
-
-**Parameters:**
-- `width` (int): Width of the gradient in pixels (default is 256)
-- `height` (int): Height of the gradient in pixels (Default is 256)
-
-**Returns:**
-- Tuple[np.ndarray, np.ndarray]: X and Y coordinate grids with values from 0 (black) to 1 (white)
-
-**Example:**
-```python
-white_to_black = apply_direction_to_gradient(create_black_to_white_gradient(), Direction.REVERSE)
-visualize_gradient_channel(white_to_black, cmap='gray', title='White to Black')
-```
-
 ### create_linear_gradients(width=256, height=256)
 Creates linear gradients along X and Y axes.
 
@@ -59,12 +38,13 @@ linear_x, linear_y = create_linear_gradients(200, 150)
 print(linear_x.shape)  # Output: (150, 200)
 ```
 
-### create_radial_gradient(width=256, height=256)
-Creates a radial gradient centered at the middle of the image.
+### create_radial_gradient(width=256, height=256, center=None)
+Creates a radial gradient centered at the specified point or middle of the image.
 
 **Parameters:**
 - `width` (int): Width of the gradient (default: 256)
 - `height` (int): Height of the gradient (default: 256)
+- `center` (tuple, optional): Center coordinates (x, y) (default: None, uses center of image)
 
 **Returns:**
 - np.ndarray: Radial gradient array
@@ -124,49 +104,32 @@ Combines three gradient arrays into an RGB image.
 
 **Example:**
 ```python
-red, green, blue = create_linear_gradients()
+red, green, blue = create_linear_gradients(), create_linear_gradients()[0]
 rgb_image = create_rgb_combination(red, green, blue)
 print(rgb_image.shape)  # Output: (256, 256, 3)
 ```
 
-### visualize_gradient_channel(gradient, cmap='viridis', title='', ax=None)
+### visualize_gradient(gradient, cmap='viridis', title='', return_fig=False)
 Displays a gradient using matplotlib.
 
 **Parameters:**
 - `gradient` (np.ndarray): Gradient array to display
 - `cmap` (str): Colormap name (default: 'viridis')
 - `title` (str): Title for the plot (default: '')
-- `ax` (matplotlib.Axes, optional): Axes object to use (default: None)
+- `return_fig` (bool): If True, returns the matplotlib figure object (default: False)
 
 **Returns:**
-- None
+- None or matplotlib.figure.Figure: Figure object if return_fig=True
 
 **Example:**
 ```python
 import matplotlib.pyplot as plt
 radial = create_radial_gradient()
-visualize_gradient_channel(radial, cmap='Blues', title='Radial Gradient')
+visualize_gradient(radial, cmap='Blues', title='Radial Gradient')
 plt.show()
-```
 
-### save_gradient_image(gradient: np.ndarray, filename: str, cmap: str = 'viridis',
-###    dpi: int = 100, bbox_inches: str = 'tight')
-
-**Parameters:**
-- `gradient` (np.ndarray): Gradient array to display
-- `filename` (str): Path to the storage file (default: '')
-- `cmap` (str): Colormap name (default: 'viridis')
-- `dpi` (int): DPI of output image (default: 100)
-- `bbox_inches` (str): How to handle figure margins (default: 'tight')
-
-**Returns:**
-- None
-
-**Example:**
-```python
-import matplotlib.pyplot as plt
-radial = create_radial_gradient()
-save_gradient_image(radial, 'pic1.png', cmap='Blues')
+# Return figure for further manipulation
+fig = visualize_gradient(radial, title='Radial Gradient', return_fig=True)
 ```
 
 ### create_linear_gradient_visualization()
@@ -241,7 +204,6 @@ black_to_white = create_black_to_white_gradient(400, 300)
 print(black_to_white.shape)  # Output: (300, 400)
 ```
 
-
 ### main()
 Main function that runs all visualization functions.
 
@@ -297,7 +259,7 @@ x_grad, y_grad = create_directional_gradients(FORWARD, REVERSE)
 ```python
 # Display a single gradient
 radial = create_radial_gradient()
-visualize_gradient_channel(radial, cmap='Blues', title='Radial Gradient')
+visualize_gradient(radial, cmap='Blues', title='Radial Gradient')
 
 # Show all visualizations
 create_linear_gradient_visualization()
@@ -308,9 +270,8 @@ create_combined_gradients_visualization()
 ### RGB Combinations
 ```python
 # Create RGB image from gradients
-red_grad = create_linear_gradients()[0]
-green_grad = create_radial_gradient()
-blue_grad = create_linear_gradients()[1]
+red_grad, green_grad = create_linear_gradients()
+blue_grad = create_linear_gradients()[0]
 
 rgb_image = create_rgb_combination(red_grad, green_grad, blue_grad)
 ```
@@ -329,3 +290,4 @@ This module requires the following packages:
 - Visualization functions display plots using matplotlib
 - The Direction enum provides clear interface for gradient direction control
 - All gradient functions support custom width and height parameters
+- The visualize_gradient function now supports returning figure objects for further manipulation
